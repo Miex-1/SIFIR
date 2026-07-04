@@ -100,6 +100,36 @@ h1,h2,.badge-name,.q-text,.rank-title{font-family:'Baloo 2',cursive}
 @keyframes shine{0%{left:-70%}55%{left:130%}100%{left:130%}}
 .tile .ikon{font-size:1.05rem;line-height:1;margin-top:2px;min-height:1.2em}
 .legend{display:flex;gap:14px;justify-content:center;margin-top:18px;flex-wrap:wrap;color:var(--muted);font-weight:800;font-size:.82rem}
+
+/* point pill di dashboard */
+.pointpill{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#FFF3D0,#FFE08A);
+  border:2px solid #F2D488;border-radius:16px;padding:10px 16px;box-shadow:0 4px 0 #E8C56A;margin-bottom:16px;justify-content:center}
+.pointpill .star{font-size:1.4rem}
+.pointpill .val{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;color:var(--gold-deep)}
+.pointpill .lbl{font-weight:800;color:#B08600;font-size:.9rem}
+
+/* petak cabaran jaguh */
+.jaguh-card{margin-top:18px;border-radius:20px;padding:18px;text-align:center;border:2px solid var(--line);
+  background:#F0EEF9;box-shadow:0 5px 0 var(--line);position:relative;overflow:hidden}
+.jaguh-card.locked{opacity:.7}
+.jaguh-card.open{border-color:#C9A94C;background:linear-gradient(180deg,#FFF9E8,#FFEFC2);
+  box-shadow:0 6px 0 #D9B84A;cursor:pointer}
+.jaguh-card.open::after{content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.75),transparent);animation:shine 3s ease-in-out infinite}
+.jaguh-card .crown{font-size:2.2rem}
+.jaguh-card h3{font-family:'Baloo 2',cursive;font-size:1.3rem;margin:4px 0}
+.jaguh-card .sub{color:var(--muted);font-weight:700;font-size:.88rem}
+.jaguh-card .mypangkat{font-family:'Baloo 2',cursive;font-weight:800;font-size:1.05rem;margin-top:8px}
+.jaguh-card .rekod{font-weight:800;color:var(--muted);font-size:.85rem;margin-top:2px}
+.pangkat-gm{color:#C98A00}.pangkat-epic{color:#C2410C}.pangkat-legend{color:#6D28D9}.pangkat-mythic{color:#BE185D}
+
+/* result badge cabaran */
+.rank-badge.gm{background:radial-gradient(circle at 35% 30%,#FFE9A8,#F5B301 60%,#B87A00);box-shadow:0 8px 0 #9A6600,0 0 0 6px #FFF3D0}
+.rank-badge.epic{background:radial-gradient(circle at 35% 30%,#FFD0A8,#F97316 60%,#B23C00);box-shadow:0 8px 0 #9A3400,0 0 0 6px #FFE8D0}
+.rank-badge.legend{background:radial-gradient(circle at 35% 30%,#E0CCFF,#8B5CF6 60%,#5B21B6);box-shadow:0 8px 0 #4C1D95,0 0 0 6px #EDE4FF}
+.rank-badge.mythic{background:radial-gradient(circle at 35% 30%,#FFD6EC,#EC4899 60%,#9D174D);box-shadow:0 8px 0 #831843,0 0 0 6px #FCE7F3}
+.rank-title.gm{color:#C98A00}.rank-title.epic{color:#C2410C}.rank-title.legend{color:#6D28D9}.rank-title.mythic{color:#BE185D}
+.pointgain{font-family:'Baloo 2',cursive;font-weight:800;font-size:1.3rem;color:var(--gold-deep);margin:10px 0}
 .legend span{display:flex;align-items:center;gap:5px}
 
 /* ---------- TIER SELECT ---------- */
@@ -193,6 +223,16 @@ h1,h2,.badge-name,.q-text,.rank-title{font-family:'Baloo 2',cursive}
     <div class="card loading"><div class="spin"></div><span id="loadMsg">Sedang semak...</span></div>
   </section>
 
+  <!-- WEBSITE TIDUR -->
+  <section id="scr-tidur" class="screen">
+    <div class="card result">
+      <div class="big">🌙</div>
+      <h2>Jaguh Sifir dah tidur</h2>
+      <p id="tidurMsg" style="margin:12px 0 4px;line-height:1.6"></p>
+      <button class="btn ghost" onclick="show('scr-login')">← Kembali</button>
+    </div>
+  </section>
+
   <!-- DASHBOARD -->
   <section id="scr-dash" class="screen">
     <div class="hello">
@@ -202,10 +242,16 @@ h1,h2,.badge-name,.q-text,.rank-title{font-family:'Baloo 2',cursive}
       </div>
       <button class="keluar" onclick="logout()">Keluar</button>
     </div>
+    <div class="pointpill">
+      <span class="star">⭐</span>
+      <span class="val" id="dashPoint">0</span>
+      <span class="lbl">point</span>
+    </div>
     <div class="grid" id="grid"></div>
     <div class="legend">
       <span>⬜ Belum Lulus</span><span>🥇 Pro</span><span>💎 Master</span>
     </div>
+    <div id="jaguhBox"></div>
   </section>
 
   <!-- TIER SELECT -->
@@ -231,6 +277,18 @@ h1,h2,.badge-name,.q-text,.rank-title{font-family:'Baloo 2',cursive}
       <div class="fb" id="qFb"></div>
     </div>
     <div class="numpad quiz-pad" id="padQuiz"></div>
+  </section>
+
+  <!-- CABARAN JAGUH: INTRO -->
+  <section id="scr-jaguh-intro" class="screen">
+    <div class="card result">
+      <div class="big">👑</div>
+      <h2>Cabaran Jaguh</h2>
+      <p style="margin:10px 0 4px">30 soalan campur sifir 2 hingga 9.<br>Masa: 5 minit. Lulus jika 28/30.</p>
+      <p style="color:var(--muted);font-weight:700;font-size:.88rem" id="jaguhRekodIntro"></p>
+      <button class="btn" onclick="mulaJaguh()">Mula Cabaran! 🔥</button>
+      <button class="btn ghost" onclick="show('scr-dash')">← Kembali</button>
+    </div>
   </section>
 
   <!-- RESULT -->
@@ -259,6 +317,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxCdbHQghBzmHlcctShkE6W
 const MULTIPLIER_MAX = 9;
 const SOALAN = 10;                 // bilangan soalan setiap kuiz
 const TIER2_MASA = 180;            // saat (3 minit)
+
+/* Cabaran Jaguh */
+const JAGUH_SOALAN = 30;
+const JAGUH_LULUS  = 28;
+const JAGUH_MASA   = 300;          // 5 minit
 
 /* Awalan nama yang BUKAN nama panggilan (guna nama seterusnya jika ada) */
 const AWALAN_BUKAN_PANGGILAN = ["MUHAMAD","MUHAMMAD","MOHAMAD","MOHAMMAD","MOHD","MUHD","NUR","NURUL"];
@@ -355,8 +418,13 @@ function cubaLogin(){
   show('scr-loading');
   api({action:"login", id:idInput}).then(res=>{
     if(res.ok){
-      murid = {id:idInput, nama:res.nama, kelas:res.kelas, ranks:res.ranks};
+      murid = {id:idInput, nama:res.nama, kelas:res.kelas, ranks:res.ranks,
+               point:res.point||0, cabaranRank:res.cabaranRank||"", cabaranMasa:res.cabaranMasa||0,
+               jaguhBuka:!!res.jaguhBuka};
       paparDash();
+    } else if(res.terkunci){
+      document.getElementById('tidurMsg').textContent = res.msg;
+      show('scr-tidur');
     } else {
       show('scr-login');
       document.getElementById('loginErr').textContent = res.msg || "ID tidak dijumpai.";
@@ -367,14 +435,22 @@ function cubaLogin(){
   });
 }
 function logout(){ murid=null; idInput=""; paparId(); show('scr-login'); }
-
 /* ---------- DASHBOARD ---------- */
+const PANGKAT_INFO = {
+  "Grandmaster":{ikon:"👑",cls:"gm"},
+  "Epic":{ikon:"🔥",cls:"epic"},
+  "Legend":{ikon:"⚡",cls:"legend"},
+  "Mythic":{ikon:"🌟",cls:"mythic"}
+};
+function formatMasa(s){ const m=Math.floor(s/60), d=s%60; return m+":"+String(d).padStart(2,"0"); }
+
 function paparDash(){
   document.getElementById('dashNama').textContent = murid.nama;
   document.getElementById('dashKelas').textContent = murid.kelas ? "Kelas " + murid.kelas : "";
+  document.getElementById('dashPoint').textContent = murid.point||0;
   const g = document.getElementById('grid'); g.innerHTML="";
   for(let s=1;s<=9;s++){
-    const r = Math.min(murid.ranks[s-1]||0, 2);   // rank melebihi 2 dipapar sebagai Master
+    const r = Math.min(murid.ranks[s-1]||0, 2);
     const t = document.createElement('div');
     t.className = "tile r"+r;
     t.innerHTML = `<div class="no">${s}</div>
@@ -383,12 +459,54 @@ function paparDash(){
     t.onclick = ()=>pilihTier(s);
     g.appendChild(t);
   }
+  paparJaguhBox();
   show('scr-dash');
+}
+
+function paparJaguhBox(){
+  const box = document.getElementById('jaguhBox');
+  if(murid.jaguhBuka){
+    const p = murid.cabaranRank ? PANGKAT_INFO[murid.cabaranRank] : null;
+    const pangkatHtml = p
+      ? `<div class="mypangkat pangkat-${p.cls}">${p.ikon} Pangkat anda: ${murid.cabaranRank}</div>`
+      : `<div class="mypangkat" style="color:var(--muted)">Belum dicuba — jadilah Jaguh!</div>`;
+    const rekodHtml = murid.cabaranMasa>0
+      ? `<div class="rekod">⏱️ Rekod terpantas: ${formatMasa(murid.cabaranMasa)}</div>` : "";
+    box.innerHTML = `<div class="jaguh-card open" onclick="bukaJaguhIntro()">
+        <div class="crown">👑</div>
+        <h3>CABARAN JAGUH</h3>
+        <div class="sub">Anda dah Master semua sifir! Uji kehebatan sebenar.</div>
+        ${pangkatHtml}${rekodHtml}
+      </div>`;
+  } else {
+    // kira berapa lagi sifir perlu Master
+    const belumMaster = murid.ranks.filter(r=>r<2).length;
+    box.innerHTML = `<div class="jaguh-card locked">
+        <div class="crown">🔒</div>
+        <h3>Cabaran Jaguh</h3>
+        <div class="sub">Master kesemua 9 sifir untuk membuka. Tinggal <b>${belumMaster}</b> sifir lagi!</div>
+      </div>`;
+  }
+}
+function paparTidurPeribadi(){
+  const nama = namaPanggilan(murid.nama);
+  document.getElementById('tidurMsg').innerHTML =
+    `🌙 <b>Syabas hari ini!</b><br>Dah pukul 10.30 malam — masa untuk jaguh berehat. `+
+    `Tidur awal buat otak lebih tajam esok. Jumpa lagi jam 6.30 pagi!<br>Selamat malam, ${nama}! 😴`;
+  show('scr-tidur');
+}
+
+function bukaJaguhIntro(){
+  if(murid.waktuTidur){ paparTidurPeribadi(); return; }
+  document.getElementById('jaguhRekodIntro').textContent =
+    murid.cabaranMasa>0 ? `Rekod terpantas anda: ${formatMasa(murid.cabaranMasa)} — cuba pecahkannya!` : "";
+  show('scr-jaguh-intro');
 }
 
 /* ---------- TIER SELECT ---------- */
 let sifirPilih = 0;
 function pilihTier(s){
+  if(murid.waktuTidur){ paparTidurPeribadi(); return; }
   sifirPilih = s;
   const r = Math.min(murid.ranks[s-1]||0, 2);
   document.getElementById('tierSifir').textContent = s;
@@ -457,12 +575,12 @@ function mulaKuiz(tier){
   }
   show('scr-quiz');
 }
-function formatMasa(s){ const m=Math.floor(s/60), d=s%60; return m+":"+String(d).padStart(2,"0"); }
 function paparSoalan(){
   const q = quiz.soalan[quiz.idx];
+  const jum = quiz.soalan.length;
   document.getElementById('qText').textContent = `${q.a} × ${q.b} =`;
-  document.getElementById('qProg').textContent = `Soalan ${quiz.idx+1}/${SOALAN}`;
-  document.getElementById('qBar').style.width = (quiz.idx/SOALAN*100)+"%";
+  document.getElementById('qProg').textContent = `Soalan ${quiz.idx+1}/${jum}`;
+  document.getElementById('qBar').style.width = (quiz.idx/jum*100)+"%";
   quiz.jawapan=""; paparJwb();
   document.getElementById('qFb').textContent=""; document.getElementById('qFb').className="fb";
 }
@@ -484,15 +602,18 @@ function semakJwb(){
     fb.textContent=`Salah ❌ Jawapan: ${q.jwb}`; fb.className="fb bad";
   }
   quiz.tamat = true; // kunci input seketika
+  const jum = quiz.soalan.length;
+  // dalam mod jaguh, gerak lebih pantas supaya muat 30 soalan
+  const jeda = quiz.mode==="jaguh" ? (betul?350:800) : (betul?650:1400);
   setTimeout(()=>{
     quiz.idx++;
-    if(quiz.idx>=SOALAN){ habisKuiz(false); }
+    if(quiz.idx>=jum){ quiz.mode==="jaguh" ? habisJaguh(false) : habisKuiz(false); }
     else { quiz.tamat=false; paparSoalan(); }
-  }, betul?650:1400);
+  }, jeda);
 }
 function masaTamat(){
   quiz.tamat = true;
-  habisKuiz(true);
+  quiz.mode==="jaguh" ? habisJaguh(true) : habisKuiz(true);
 }
 function habisKuiz(sebabMasa){
   clearInterval(timerInt);
@@ -503,15 +624,18 @@ function habisKuiz(sebabMasa){
        markah:quiz.betul, masa:masaAmbil})
     .then(res=>{
       if(res.ok && typeof res.rank==="number") murid.ranks[quiz.sifir-1]=res.rank;
-      paparResult(lulus, sebabMasa, res.ok && res.naik);
+      if(res.ok && typeof res.point==="number") murid.point = res.point;
+      if(res.ok && typeof res.jaguhBuka==="boolean") murid.jaguhBuka = res.jaguhBuka;
+      if(res.ok && res.waktuTidur) murid.waktuTidur = true;
+      paparResult(lulus, sebabMasa, res.ok && res.naik, res.ok?res.pointDapat:0);
     })
-    .catch(()=>paparResult(lulus, sebabMasa, false));
+    .catch(()=>paparResult(lulus, sebabMasa, false, 0));
   document.getElementById('loadMsg').textContent="Menyimpan keputusan...";
   show('scr-loading');
 }
 
 /* ---------- RESULT ---------- */
-function paparResult(lulus, sebabMasa, naik){
+function paparResult(lulus, sebabMasa, naik, pointDapat){
   const em = document.getElementById('resEmoji');
   const badge = document.getElementById('resBadge');
   const title = document.getElementById('resTitle');
@@ -525,8 +649,10 @@ function paparResult(lulus, sebabMasa, naik){
     const pilih = senarai[Math.floor(Math.random()*senarai.length)];
     const ucapan = pilih(panggilan).replace("{sifir}", quiz.sifir);
     em.textContent = "🎉";
+    let pointHtml = "";
+    if(pointDapat>0) pointHtml = `<div class="pointgain">+${pointDapat} ⭐ point!</div>`;
     badge.innerHTML = `<div class="rank-badge ${r.cls}">${r.ikon}</div>
-                       <div class="rank-title ${r.cls}">${r.nama}</div>`;
+                       <div class="rank-title ${r.cls}">${r.nama}</div>${pointHtml}`;
     title.textContent = naik ? "Tahniah! Rank Naik!" : "Hebat! 10/10!";
     msg.textContent = ucapan;
     retry.style.display="none";
@@ -539,10 +665,106 @@ function paparResult(lulus, sebabMasa, naik){
       : `Anda dapat ${quiz.betul}/${SOALAN}. Perlu 10/10 untuk lulus. Jangan putus asa!`;
     retry.style.display="block";
   }
+  document.getElementById('resRetry').textContent = "Cuba Lagi 💪";
   show('scr-result');
 }
 function afterResult(){ paparDash(); }
-function retryQuiz(){ mulaKuiz(quiz.tier); }
+function retryQuiz(){
+  if(murid.waktuTidur){ paparTidurPeribadi(); return; }
+  if(quiz.mode==="jaguh") mulaJaguh();
+  else mulaKuiz(quiz.tier);
+}
+
+/* ---------- CABARAN JAGUH ---------- */
+function janaSoalanJaguh(){
+  const soalan = [];
+  for(let i=0;i<JAGUH_SOALAN;i++){
+    const a = 2 + Math.floor(Math.random()*8);   // sifir 2-9
+    const b = 2 + Math.floor(Math.random()*8);   // pengganda 2-9
+    soalan.push({a:a, b:b, jwb:a*b});
+  }
+  return soalan;
+}
+function mulaJaguh(){
+  quiz = {
+    mode:"jaguh", soalan:janaSoalanJaguh(),
+    idx:0, betul:0, jawapan:"", mula:Date.now(), tamat:false,
+    baki: JAGUH_MASA
+  };
+  document.getElementById('qFb').textContent="";
+  buatPad(document.getElementById('padQuiz'),
+    d=>{ if(!quiz.tamat && quiz.jawapan.length<3){ quiz.jawapan+=d; paparJwb(); } },
+    ()=>{ if(!quiz.tamat){ quiz.jawapan=quiz.jawapan.slice(0,-1); paparJwb(); } },
+    ()=>{ if(!quiz.tamat) semakJwb(); },
+    "Jawab"
+  );
+  paparSoalan();
+  clearInterval(timerInt);
+  const tEl = document.getElementById('qTimer');
+  tEl.textContent = formatMasa(quiz.baki);
+  tEl.classList.remove('danger');
+  timerInt = setInterval(()=>{
+    quiz.baki--;
+    tEl.textContent = formatMasa(quiz.baki);
+    if(quiz.baki<=30) tEl.classList.add('danger');
+    if(quiz.baki<=0){ clearInterval(timerInt); masaTamat(); }
+  },1000);
+  show('scr-quiz');
+}
+function habisJaguh(sebabMasa){
+  clearInterval(timerInt);
+  const masaAmbil = Math.round((Date.now()-quiz.mula)/1000);
+  api({action:"jaguh", id:murid.id, markah:quiz.betul, masa:masaAmbil})
+    .then(res=>{
+      if(res.ok){
+        if(typeof res.point==="number") murid.point = res.point;
+        if(res.pangkat) murid.cabaranRank = res.pangkat;
+        if(res.masaTerpantas) murid.cabaranMasa = res.masaTerpantas;
+        if(res.waktuTidur) murid.waktuTidur = true;
+      }
+      paparResultJaguh(res);
+    })
+    .catch(()=>paparResultJaguh({ok:false, _sambungan:true}));
+  document.getElementById('loadMsg').textContent="Menyimpan keputusan...";
+  show('scr-loading');
+}
+function paparResultJaguh(res){
+  const em = document.getElementById('resEmoji');
+  const badge = document.getElementById('resBadge');
+  const title = document.getElementById('resTitle');
+  const msg = document.getElementById('resMsg');
+  const retry = document.getElementById('resRetry');
+  badge.innerHTML="";
+  const panggilan = namaPanggilan(murid.nama);
+
+  if(res && res.ok && res.lulus){
+    const p = PANGKAT_INFO[res.pangkat] || PANGKAT_INFO["Grandmaster"];
+    let pointHtml = res.pointDapat>0 ? `<div class="pointgain">+${res.pointDapat} ⭐ point!</div>` : "";
+    let rekodHtml = res.rekodBaru ? `<div class="rekod" style="margin-top:6px">🎯 Rekod peribadi baharu: ${formatMasa(res.masa)}!</div>` : "";
+    em.textContent = "🏆";
+    badge.innerHTML = `<div class="rank-badge ${p.cls}">${p.ikon}</div>
+                       <div class="rank-title ${p.cls}">${res.pangkat}</div>${pointHtml}${rekodHtml}`;
+    title.textContent = res.naikPangkat ? `${panggilan}, PANGKAT NAIK! 🎉` : `Hebat, ${panggilan}!`;
+    msg.textContent = res.naikPangkat
+      ? `Anda kini seorang ${res.pangkat}! Jaguh sifir sebenar!`
+      : `Anda kekalkan pangkat ${res.pangkat}. Cuba lebih laju untuk naik!`;
+    retry.style.display="block";
+    confetti();
+  } else if(res && res._sambungan){
+    em.textContent = "⚠️";
+    title.textContent = "Masalah Sambungan";
+    msg.textContent = "Keputusan mungkin tidak tersimpan. Sila cuba lagi.";
+    retry.style.display="block";
+  } else {
+    em.textContent = (res && res.markah!=null && res.markah<JAGUH_LULUS) ? "💪" : "⏰";
+    title.textContent = "Belum Berjaya";
+    const markah = (res && res.markah!=null) ? res.markah : quiz.betul;
+    msg.textContent = `${panggilan}, anda dapat ${markah}/${JAGUH_SOALAN}. Perlu ${JAGUH_LULUS}/${JAGUH_SOALAN} dalam masa. Teruskan berlatih!`;
+    retry.style.display="block";
+  }
+  document.getElementById('resRetry').textContent = "Cuba Lagi 🔥";
+  show('scr-result');
+}
 
 /* ---------- CONFETTI ---------- */
 function confetti(){
